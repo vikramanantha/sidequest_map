@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Sidequest Map - Vikram Anantha</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../images/icon.png">
+    <style>
+        /* Map page overrides global layout */
+        main {
+            flex-direction: column !important;
+            flex-wrap: nowrap !important;
+            padding: 0 !important;
+            padding-top: 75px !important;
+            gap: 0 !important;
+        }
+
+        /* ── Controls bar ── */
+        #map-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            background: var(--color-background);
+            border-bottom: 1px solid #ccc;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        #map-controls-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        #map-controls h1 {
+            font-size: 1.25rem;
+            color: var(--color-main);
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        #fullscreen-btn {
+            background: var(--color-main);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        #fullscreen-btn:hover { background: var(--color-accent); }
+
+        /* ── Filters ── */
+        #filter-bar {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 0.4rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 2px;
+        }
+        #filter-bar::-webkit-scrollbar { display: none; }
+
+        .sm-filter-btn {
+            padding: 3px 12px;
+            border: 2px solid var(--color-main);
+            border-radius: 20px;
+            background: white;
+            color: var(--color-main);
+            font-family: var(--font-primary);
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.15s ease;
+        }
+        .sm-filter-btn.active,
+        .sm-filter-btn:hover {
+            background: var(--color-main);
+            color: white;
+        }
+
+        /* ── Map ── */
+        #map {
+            flex: 1;
+            min-height: 300px;
+        }
+
+        #map-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--color-main);
+            font-size: 1rem;
+            gap: 0.5rem;
+        }
+
+        /* ── Fullscreen mode ── */
+        body.map-fullscreen #header-placeholder,
+        body.map-fullscreen #footer-placeholder { display: none; }
+
+        body.map-fullscreen main {
+            padding-top: 0 !important;
+            position: fixed !important;
+            inset: 0 !important;
+            z-index: 1000;
+        }
+
+        body.map-fullscreen #map-controls {
+            background: rgba(10, 35, 66, 0.92);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom-color: rgba(255,255,255,0.15);
+        }
+
+        body.map-fullscreen #map-controls h1 { color: white; }
+
+        body.map-fullscreen .sm-filter-btn {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.4);
+            color: white;
+        }
+        body.map-fullscreen .sm-filter-btn.active,
+        body.map-fullscreen .sm-filter-btn:hover {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="header-placeholder"></div>
+
+        <main>
+            <div id="map-controls">
+                <div id="map-controls-top">
+                    <h1>
+                        <i class="fas fa-map-marked-alt" style="color:var(--color-accent);margin-right:0.4rem;font-size:1.1rem;"></i>
+                        Sidequest Map
+                    </h1>
+                    <button id="fullscreen-btn" onclick="toggleFullscreen()" title="Toggle fullscreen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+                <div id="filter-bar">
+                    <span style="color:#888;font-size:0.85rem;display:flex;align-items:center;gap:0.4rem;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading…
+                    </span>
+                </div>
+            </div>
+
+            <div id="map">
+                <div id="map-loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading map…
+                </div>
+            </div>
+        </main>
+
+        <div id="footer-placeholder"></div>
+    </div>
+
+    <script src="../header.js"></script>
+    <script src="../footer.js"></script>
+    <script src="script.js"></script>
+    <script>
+        window.onload = function () {
+            loadHeader();
+            loadFooter();
+            initSidequestMap();
+        };
+    </script>
+</body>
+</html>
